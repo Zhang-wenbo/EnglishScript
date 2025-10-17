@@ -41,9 +41,7 @@ https://www.bilibili.com/video/BV1at9nYXEhg/?share_source=copy_web&vd_source=c4f
 
 因为代码中调取了 TomatoOcr 的文字识别工具，所以需要尽量保证识别区域干净整洁，以防文字识别意外，下附具体设置方法：
 
-<img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420442737-6d1e2f73-49f9-4d70-ab1b-840946af1ebd.png" alt="皮肤设置内容" height="300"><img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760202761105-f305f93c-ae57-42d2-b6d9-2bd324071d1f.png" alt="进入小程序" height="300"><img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760677743559-60768753-3a1b-4963-a2aa-01cf0e00e178.png" alt="进入我的" height="300">
-
-<img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420328453-6571c3c2-e7ba-4fe1-b687-9ef05476a147.png" alt="设置内容" height="300">
+<img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760202761105-f305f93c-ae57-42d2-b6d9-2bd324071d1f.png" alt="进入小程序" height="200"><img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760677743559-60768753-3a1b-4963-a2aa-01cf0e00e178.png" alt="进入我的" height="200"><img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420442737-6d1e2f73-49f9-4d70-ab1b-840946af1ebd.png" alt="皮肤设置内容" height="200"><img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420328453-6571c3c2-e7ba-4fe1-b687-9ef05476a147.png" alt="设置内容" height="200">
 
 # 四、声明
 
