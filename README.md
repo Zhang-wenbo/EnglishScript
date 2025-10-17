@@ -9,7 +9,7 @@
 
 并且基于 Layui 制作了漂亮的任务设置页面，其坐标获取功能可用于不同分辨率手机的适配。
 
-![img](https://cdn.nlark.com/yuque/0/2025/jpeg/42519851/1760678331766-d5f7e8f6-2bf0-4afe-afda-c7d0a8d0f1d3.jpeg)
+<img src="https://cdn.nlark.com/yuque/0/2025/jpeg/42519851/1760678331766-d5f7e8f6-2bf0-4afe-afda-c7d0a8d0f1d3.jpeg" style="zoom: 10%;" />
 
 # 二、开发环境
 
@@ -33,7 +33,7 @@ https://www.bilibili.com/video/BV1at9nYXEhg/?share_source=copy_web&vd_source=c4f
 
 ------
 
-![img](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760678934096-3d49e009-1529-4785-b27c-c667f9d37293.png?x-oss-process=image%2Fcrop%2Cx_0%2Cy_0%2Cw_1721%2Ch_535)
+<img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760678934096-3d49e009-1529-4785-b27c-c667f9d37293.png?x-oss-process=image%2Fcrop%2Cx_0%2Cy_0%2Cw_1721%2Ch_535" alt="img" style="zoom:20%;" />
 
 由于需要调用 TomatoOcr 插件进行 OCR 识别，但价格昂贵，所以如需许可证，可联系开发者，你只需支付远低于市场价的金额即可获取。
 
@@ -41,7 +41,7 @@ https://www.bilibili.com/video/BV1at9nYXEhg/?share_source=copy_web&vd_source=c4f
 
 因为代码中调取了 TomatoOcr 的文字识别工具，所以需要尽量保证识别区域干净整洁，以防文字识别意外，下附具体设置方法：
 
-![进入小程序](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760202761105-f305f93c-ae57-42d2-b6d9-2bd324071d1f.png)![进入我的](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760677743559-60768753-3a1b-4963-a2aa-01cf0e00e178.png)![皮肤设置内容](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420442737-6d1e2f73-49f9-4d70-ab1b-840946af1ebd.png)![设置内容](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420328453-6571c3c2-e7ba-4fe1-b687-9ef05476a147.png)
+<img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760202761105-f305f93c-ae57-42d2-b6d9-2bd324071d1f.png" alt="进入小程序" style="zoom:10%;" /><img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760677743559-60768753-3a1b-4963-a2aa-01cf0e00e178.png" alt="进入我的" style="zoom:10%;" /><img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420442737-6d1e2f73-49f9-4d70-ab1b-840946af1ebd.png" alt="皮肤设置内容" style="zoom:10%;" /><img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420328453-6571c3c2-e7ba-4fe1-b687-9ef05476a147.png" alt="设置内容" style="zoom:10%;" />
 
 # 四、声明
 
