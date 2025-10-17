@@ -1,231 +1,152 @@
-"""
-1.进入翻转主页面
-2.几个函数
-【学习卡执行函数 -> 选择卡执行函数 -> 确定是学习卡还是选择卡并跳转到对应函数】
-【"完成.png"和"确认.png"的点击函数】
-"""
+print("单词拼写开始执行")
 
-print("单词翻转任务开始执行")
-
-
-# ----- 1.相关库、包、文件的引入 ----- #
-import time, json, re, difflib
-from ascript.android import action
-from ascript.android.system import R
-from android.view.animation import AccelerateInterpolator # 差速器-加速
-from ascript.android.system import R
-from ascript.android.screen import FindImages
-from ascript.android import plug
-plug.load("TomatoOcr:1.1.7")
+# ----- 1.导包导库 ----- #
+from ascript.android import action  # 行为库
+from ascript.android.screen import re  # 正则
+from ascript.android.screen import json
+from ascript.android.system import R  # 路径
+from ascript.android.screen import FindImages  # 找图
+from ascript.android import screen  # 屏幕信息
+from ascript.android import plug  # 调插件
+plug.load("TomatoOcr:1.1.7")  # 番茄OCR
 from TomatoOcr import TomatoOcr
+import time  # 延时
 plug.load("esp32") # ESP32开发板
 from esp32 import UsbDevice # Usb模型
 usb = UsbDevice() # 自动扫描AS设备并连接
 
-with open(R.sd("coordinates.json"), "r", encoding="utf-8") as f:
-    coordinates = json.load(f)
-words_turn = {
-    key: action.Point(value["x"], value["y"])
-    for key, value in coordinates["words_turn"].items()
-}
-
-
-# ----- 2.必要全局变量的配置 ----- #
-KEY = '2LVXTSTBSMYLBJDURSL5NEOXZRE1P2I4|Y4v1glz7FpE6HPY5bRMwfOW8'
-AREA = [
-    words_turn["请点击卡片左上角"].x, words_turn["请点击卡片左上角"].y,
-    words_turn["请点击卡片右下角"].x, words_turn["请点击卡片右下角"].y
-]
-KEY_WORD = re.compile(r"^[A-Za-z]+$")  # 检测纯粹单词部分
-POS_PATTERN = re.compile(r"[\u4e00-\u9fa5]+")  # 检测词性-Unicode编码中文
-OPTION_PATTERN = re.compile(r"^([A-D])[\.．、\s]+(.*)$")  # 检测选项部分
-
-DICT = {}
-
-# ----- 3.核心函数 ----- #
+# ----- 2.加载坐标信息 ----- #
 """
-learn_card函数无需传参，根据指定矩形范围内进行OCR识别，
-返回{单词:释义}的字典，其存再总字典DICT中
-其中因OCR的原因，若释义为多行，它就会分开，
-这里当检测到第一行释义就break掉，防止值被改变
+coordinates.json存在于我们有权限的"/sd"卡路径下,
+写入时都是通过gey-xx-coordinates项目完成的。
+这个json读入后我们通过words_spell作为命名变量
 """
-# 工具函数：仅保留中文
-def filter_chinese(s):
-    return ''.join(re.findall(r'[\u4e00-\u9fa5]', s))
+try:
+    with open(R.sd("coordinates.json"), "r") as f:
+        coordinates = json.load(f)
+    # 将加载的字典转换回 Point 对象，若想返回元组，就去掉action.Point
+    words_spell = {
+        key: action.Point(value["x"], value["y"])
+        for key, value in coordinates["words_spell"].items()
+    }
+except FileNotFoundError:
+    print("错误：未找到click_where.json文件，请先运行坐标获取程序。")
+    exit(1)
+except json.JSONDecodeError:
+    print("错误：click_where.json文件格式不正确。")
+    exit(1)
+except KeyError:
+    print("错误：click_where.json文件中缺少必要的坐标信息。")
+    exit(1)
 
-def is_similar_cn(str1, str2, threshold):
-    s1 = filter_chinese(str1)
-    s2 = filter_chinese(str2)
-    matcher = difflib.SequenceMatcher(None, s1, s2)
-    return matcher.ratio() >= threshold
-
-def compare_meanings(result, meanings, min_threshold=0.05, start_threshold=0.9, step=0.05):
-    threshold = start_threshold
-    while threshold >= min_threshold:
-        for dict_meaning in meanings:
-            if is_similar_cn(result, dict_meaning, threshold):
-                return True
-        threshold -= step
-    return False
-
-# ----- 优化后的 learn_card ----- #
-def learn_card(max_try=3):
-    for try_num in range(max_try):
-        key = None
-        meaning_list = []
-        res = TomatoOcr.find_all(
-            mode="dev", http_interval_time=43200, license=KEY, rec_type="ch-3.0",
-            box_type="rect", ratio=1.9, threshold=0.8, return_type="json", capture=AREA,
-        )
-        try:
-            res = json.loads(res)
-        except Exception as e:
-            print(f"OCR JSON error: {e}")
-            continue
-        for r in res:
-            if KEY_WORD.match(r["words"]):
-                key = r["words"].strip()
-                print("单词为：" + key)
-            if POS_PATTERN.search(r["words"]):
-                value = filter_chinese(r["words"]).strip()
-                print("释义为：" + value)
-                meaning_list.append(value)
-        if key and meaning_list:
-            DICT[key] = meaning_list
-            return DICT
-        print(f"OCR未能识别到有效单词或释义，第{try_num+1}次重试")
-        time.sleep(1)
-    print("多次未能识别成功，自动尝试翻转卡片后处理弹窗")
-    center_x = (words_turn["请点击卡片左上角"].x + words_turn["请点击卡片右下角"].x) // 2
-    center_y = (words_turn["请点击卡片左上角"].y + words_turn["请点击卡片右下角"].y) // 2
-    usb.click(center_x, center_y, 20)
-    png()  # 返回None时自动尝试关闭弹窗
-    return None
-
-"""
-字符串相似函数，传入两个字符串并设置阈值，返回True或False
-"""
-def is_similar(str1, str2, threshold=0.6):
-    # 使用SequenceMatcher计算相似度
-    matcher = difflib.SequenceMatcher(None, str1, str2)
-    similarity_ratio = matcher.ratio()
-
-    # 与阈值比较并返回结果
-    return similarity_ratio >= threshold
-
-
-"""
-scelect_card函数无需传参也无返回值，它对存在于字典中的单词自动点击其释义位置
-"""
-# ----- 优化后的 scelect_card ----- #
-def scelect_card(start_threshold=0.9, min_threshold=0.05, step=0.05):
-    res = TomatoOcr.find_all(
-        mode="dev", http_interval_time=43200, license=KEY, rec_type="ch-3.0",
-        box_type="rect", ratio=1.9, threshold=0.8, return_type="json", capture=AREA,
-    )
-    try:
-        res = json.loads(res)
-    except Exception as e:
-        print(f"OCR JSON error: {e}")
-        png() # 异常自动弹窗
-        return None
-    print("识别结果为：", res)
-    print("字典为：", DICT)
-    matched = False
-    key_word = None
-    for r in res:
-        word = KEY_WORD.match(r["words"])
-        if word:
-            key_word = word.group().strip()
-            print("单词为：", key_word)
-            continue
-        if key_word and key_word in DICT:
-            meanings = DICT[key_word]
-            if compare_meanings(r["words"], meanings, min_threshold, start_threshold, step):
-                location = r["location"]
-                x_center = sum([p[0] for p in location]) // len(location)
-                y_center = sum([p[1] for p in location]) // len(location)
-                print("点击位置为：", x_center, y_center)
-                usb.click(x_center + words_turn["请点击卡片左上角"].x, y_center + words_turn["请点击卡片左上角"].y, 20)
-                print("已点击正确答案！")
-                time.sleep(1)
-                matched = True
-                break
-            else:
-                print(f"OCR识别的选项词 {r['words']} 与释义均未达到最小阈值{min_threshold}")
-    if not matched:
-        print("未成功匹配到释义，返回None，由主流程决定处理方式。")
-        png()  # 失败自动尝试关闭弹窗
-        return None
-    return 0
-
-
-
-"""
-对主页面卡包进行分类，不同的卡包进入不同的函数
-"""
-def category():
-    res = TomatoOcr.find_all(
-        mode="dev", http_interval_time=43200, license=KEY, rec_type="ch-3.0",
-        box_type="rect", ratio=1.9, threshold=0.8, return_type="json", capture=AREA,
-    )
-    res = json.loads(res)
-    length = len(res)
-    if length < 5:
-        return learn_card()
-    else:
-        return scelect_card()
-
-
-def png():
-    yes = FindImages.find_template([R.img("确定.png")], confidence=0.8, rgb=True)
-    done = FindImages.find_template([R.img("完成.png")], confidence=0.8, rgb=True)
-    clicked = False
-    if yes:
-        print("检测到确认按钮并尝试点击")
-        action.click(yes["center_x"], yes["center_y"])
-        clicked = True
-    if done:
-        print("检测到完成按钮并尝试点击退出")
-        action.click(done["center_x"], done["center_y"])
-        time.sleep(0.5)
-        action.Key.back()
-        clicked = True
-    return clicked
-
-
-def main():
-    while True:
-        usb.click(words_turn["请点击卡片左上角"].x, words_turn["请点击卡片左上角"].y, 20)
-        time.sleep(1)
-        png()
-        category()
-        time.sleep(1)
-        png()
-        usb.slide(words_turn["请点击卡片右下角"].x, words_turn["请点击卡片右下角"].y,
-                  words_turn["请点击卡片左上角"].x, words_turn["请点击卡片左上角"].y, 300)
-        time.sleep(1.5)
-        png()
-
-
-# ----- 4.主程序 ----- #
-action.click(words_turn["请点击单词"].x, words_turn["请点击单词"].y, 20)
+# ----- 3.进入单词拼写主界面 -----#
+usb.click(words_spell["请点击单词"].x, words_spell["请点击单词"].y, 20)  # 点击单词选项卡
+time.sleep(1)
+usb.click(words_spell["请点击开始"].x, words_spell["请点击开始"].y, 20)  # 点击拼写开始按钮
+time.sleep(1)
+usb.click(words_spell["请点击确定"].x, words_spell["请点击确定"].y, 20)  # 点击确定按钮
 time.sleep(1)
 
-# 支持多卡包灵活扩展，比如卡包一、卡包二……，直接增加即可
-package_keys = [
-    "请点击卡包(一)",
-    "请点击卡包(二)"
-]
+# ----- 4.找正确单词函数 ----- #
+"""
+一直点击键盘上的q键20次后点击确认寻找正确答案
+action.click函数(坐标,点击持续时长)
+键盘上面是在触摸时才会输入，并且长按不会重复打字
+"""
+def find():
+    for _ in range(20):
+        usb.click(words_spell["q"].x, words_spell["q"].y, 20)  # 连续点击键盘q
+    usb.click(words_spell["请点击确认键"].x, words_spell["请点击确认键"].y, 20)  # 点击确认按钮
+    time.sleep(1)
 
+    result = TomatoOcr.find_all(
+        mode="dev",
+        http_interval_time=43200,  # 12h进行一次授权验证
+        license="2LVXTSTBSMYLBJDURSL5NEOXZRE1P2I4|Y4v1glz7FpE6HPY5bRMwfOW8",
+        rec_type="ch-3.0",
+        box_type="rect",
+        ratio=1.6,
+        threshold=0.8,
+        return_type="json",
+        binary=0,
+        run_mode="slow",
+        bg_color="white",
+        ocr_type=3,
+        capture=[
+            words_spell["请点击卡片左上角"].x,
+            words_spell["请点击卡片左上角"].y,
+            words_spell["请点击卡片右下角"].x,
+            words_spell["请点击卡片右下角"].y
+        ]
+    )
+
+    # 将TomatoOcr返回的字符串转为Json格式
+    if isinstance(result, str):
+        try:
+            result = json.loads(result)
+        except json.JSONDecodeError:
+            print("JSON 解析失败，请检查字符串格式。")
+            result = []
+
+    word = None  # 存放提取的英文单词
+
+    # 处理OCR结果，提取单词
+    for item in result:
+        text = item["words"]
+        if "提示" in text:
+            # 去掉空格，防止OCR出现 "po ssibility" 等问题
+            clean_text = text.replace(" ", "")
+            # 用正则匹配提示后面的连续英文字母
+            match = re.search(r"提示([A-Za-z]+)", clean_text)
+            if match:
+                word = match.group(1)
+                break  # 找到就退出循环
+
+    if word:  # 如果找到了单词，就返回
+        print("提取结果为:", word)
+        return word
+    else:
+        print("未找到单词，继续查找...")
+        # 检测完成标识
+        finish = FindImages.find_template([R.img("完成.png")], confidence=0.5, rgb=True)
+        if finish:
+            print("检测到完成，提前终止拼写流程。")
+            return None
+        time.sleep(1)
+        return find()  # 递归调用 find，直到找到为止
+
+# ----- 5.拼写单词函数 ----- #
+def spell(word):
+    for i in word:
+        if i.islower():  # 针对小写输入
+            time.sleep(0.5)
+            usb.click(words_spell[i].x, words_spell[i].y, 20)
+        else:  # 针对大写输入
+            usb.click(words_spell["请点击大小写转换键"].x, words_spell["请点击大小写转换键"].y, 20)
+            j = i.lower()
+            usb.click(words_spell[j], 20)
+            usb.click(words_spell["请点击大小写转换键"].x, words_spell["请点击大小写转换键"].y, 20)
+    usb.click(words_spell["请点击确认键"].x, words_spell["请点击确认键"].y, 20)
+
+# ----- 6.主程序函数 ----- #
+def main():
+    word = find()  # 一直找,直到返回一个单词或None
+    if not word:
+        return  # 直接返回，不再拼写
+    usb.click(words_spell["请点击删除键"].x, words_spell["请点击删除键"].y, 20)  # 当错误满时,只需删除一次即可全部消除
+    spell(word)  # 拼写这个单词
+
+# -----7.主循环 ----- #
 while True:
-    for pkg in package_keys:
-        print(f"开始处理：{pkg}")
-        action.click(words_turn[pkg].x, words_turn[pkg].y, 20)
-        time.sleep(1)
-        main()  # 卡包内部循环流程
-        # 如有需要可加卡包退出或返回操作
-        # action.Key.back()  # 具体视实际情况决定是否加
-        time.sleep(1)
+    main()
+    # 检测是否完成
+    finish = FindImages.find_template([R.img("完成.png"), ], confidence=0.5, rgb=True)
+    print("已完成")
+    if finish:
+        action.Key.back()
+        time.sleep(0.5)
+        action.Key.back()
+        time.sleep(0.5)
+        break
 
-
+print("单词拼写结束")
