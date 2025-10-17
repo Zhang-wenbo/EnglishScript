@@ -1,2 +1,49 @@
 # EnglishScript
-基于AScript开发的微信小程序翻转外语脚本，拥有UI页面，可直接在手机上运行
+开发者 WX：Ha_Okay_Ha
+
+# 一、简介
+
+天下苦英语久矣！我一直在寻找网上是否有大佬完成过翻转外语小程序脚本的开发，着实找到几个，但都不够详细，也都操作不便。
+
+于是，EnglishScript 应运而生，该程序无需电脑，进行一块开发板外加手机，即可运行，方便快捷。
+
+并且基于 Layui 制作了漂亮的任务设置页面，其坐标获取功能可用于不同分辨率手机的适配。
+
+![img](https://cdn.nlark.com/yuque/0/2025/jpeg/42519851/1760678331766-d5f7e8f6-2bf0-4afe-afda-c7d0a8d0f1d3.jpeg)
+
+# 二、开发环境
+
+http://dev.airscript.cn/
+
+脚本基于 AScript 开发，无需电脑即可在手机端直接运行，其官网链接如上。
+
+------
+
+https://www.bilibili.com/video/BV1HX4y1i7pf/?share_source=copy_web&vd_source=c4fffa513d6db04895d3e253e3d9cd1a
+
+此视频可供入手学习，对不会使用的同学友好。
+
+------
+
+由于该小程序有防检测机制，传统的点击和滑动可能失效或者异常，所以作者采用 ESP32-HID 的形式，完成防检测，具体使用视频如下，官网开发文档也有介绍。
+
+https://www.bilibili.com/video/BV1at9nYXEhg/?share_source=copy_web&vd_source=c4fffa513d6db04895d3e253e3d9cd1a
+
+因为作者利用 ESP32-S3 开发板，所以选择了 USB-HID 的模式，如需蓝牙 HID，请自行修改源码。
+
+------
+
+![img](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760678934096-3d49e009-1529-4785-b27c-c667f9d37293.png?x-oss-process=image%2Fcrop%2Cx_0%2Cy_0%2Cw_1721%2Ch_535)
+
+由于需要调用 TomatoOcr 插件进行 OCR 识别，但价格昂贵，所以如需许可证，可联系开发者，你只需支付远低于市场价的金额即可获取。
+
+# 三、必要设置
+
+因为代码中调取了 TomatoOcr 的文字识别工具，所以需要尽量保证识别区域干净整洁，以防文字识别意外，下附具体设置方法：
+
+![进入小程序](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760202761105-f305f93c-ae57-42d2-b6d9-2bd324071d1f.png)![进入我的](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760677743559-60768753-3a1b-4963-a2aa-01cf0e00e178.png)![皮肤设置内容](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420442737-6d1e2f73-49f9-4d70-ab1b-840946af1ebd.png)![设置内容](https://cdn.nlark.com/yuque/0/2025/png/42519851/1760420328453-6571c3c2-e7ba-4fe1-b687-9ef05476a147.png)
+
+# 四、声明
+
+- 本项目完全个人开发，代码开源，但不接受任何对源码封装后的商业行为，请自行遵守社区开源协议！
+- 本项目仅用于学习交流，学习是自己的事。好好学习，天天向上！
