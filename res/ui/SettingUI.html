@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./layui/css/layui.css" rel="stylesheet">
+    <style>
+        .header { display: flex; align-items: center; justify-content: center; background-color: #16b777; color: white; height: 30px; }
+        .form-section { padding: 10px; }
+        .button-section { margin-top: 20px; }
+    </style>
+    <title>EnglishScript</title>
+</head>
+<body>
+
+<!--标题-->
+<div class="header">
+    <h3>任务设置</h3>
+</div>
+
+<!--介绍部分-->
+<blockquote class="layui-elem-quote" style="margin-top: 30px;">
+    <div class="layui-text">
+        <ul>
+            <li>坐标获取仅需第一次使用脚本才需配置，若有更改才需再次执行</li>
+            <li>功能支持：单词拼写、单词翻转(两卡包)、听力(一卡包)、语法(一卡包)、阅读(一卡包)</li>
+            <li>对只支持一卡包的但若有两个卡包则需重新执行坐标获取，在选择卡包处选择目标卡包</li>
+            <li>版本号：2025.10.8</li>
+        </ul>
+    </div>
+</blockquote>
+
+<!--表单-->
+<form class="layui-form layui-form-pane form-section" action="">
+    <div class="layui-form">
+        <input type="checkbox" name="get_words_spell_coordinates" title="单词拼写坐标获取" lay-skin="switch">
+        <input type="checkbox" name="get_words_turn_coordinates" title="单词翻转坐标获取" lay-skin="switch">
+        <input type="checkbox" name="get_listen_coordinates" title="听力坐标获取" lay-skin="switch">
+        <input type="checkbox" name="get_grammar_coordinates" title="语法坐标获取" lay-skin="switch">
+        <input type="checkbox" name="get_read_coordinates" title="阅读坐标获取" lay-skin="switch">
+        <hr class="layui-border-green">
+        <input type="checkbox" name="单词-拼写" title="单词-拼写" lay-skin="switch">
+        <input type="checkbox" name="单词-翻转" title="单词-翻转" lay-skin="switch">
+        <input type="checkbox" name="听力" title="听力" lay-skin="switch">
+        <input type="checkbox" name="语法" title="语法" lay-skin="switch">
+        <input type="checkbox" name="阅读" title="阅读" lay-skin="switch">
+
+    </div>
+
+    <div class="layui-row button-section">
+        <div class="layui-col-xs6">
+            <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="demo2">确定</button>
+        </div>
+        <div class="layui-col-xs6">
+            <button class="layui-btn layui-bg-red layui-btn-fluid" onclick="wclose()">关闭</button>
+        </div>
+    </div>
+</form>
+
+<!-- JS -->
+<script src="./layui/layui.js"></script>
+<script>
+    function wclose() {
+        console.log("关闭点击了");
+        airscript.close()
+    }
+</script>
+<script>
+    layui.use(['form', 'layer'], function () {
+        var form = layui.form;
+        var layer = layui.layer;
+
+        // 欢迎信息
+        layer.msg('Welcome!', {icon: 6, offset:'c' ,time: 1000});
+
+        // 提交事件
+        form.on('submit(demo2)', function (data) {
+            var field = data.field;
+            window.airscript.call('submit', JSON.stringify(field))
+            airscript.close()
+            return false; // 阻止默认 form 跳转
+        });
+    });
+</script>
+</body>
+</html>
