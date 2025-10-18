@@ -31,7 +31,7 @@ words_turn = {
 
 
 # ----- 2.必要全局变量的配置 ----- #
-KEY = '2LVXTSTBSMYLBJDURSL5NEOXZRE1P2I4|Y4v1glz7FpE6HPY5bRMwfOW8'
+KEY = '2LVXTSTBSMYLBJDURSL5NEOXZRE1P2I4|OYmh2StbXI8nghY5vPCIkT6e'
 AREA = [
     words_turn["请点击卡片左上角"].x, words_turn["请点击卡片左上角"].y,
     words_turn["请点击卡片右下角"].x, words_turn["请点击卡片右下角"].y
@@ -180,10 +180,15 @@ def category():
 def png():
     yes = FindImages.find_template([R.img("确定.png")], confidence=0.8, rgb=True)
     done = FindImages.find_template([R.img("完成.png")], confidence=0.8, rgb=True)
+    cont = FindImages.find_template([R.img("继续.png")], confidence=0.8, rgb=True)
     clicked = False
     if yes:
         print("检测到确认按钮并尝试点击")
         action.click(yes["center_x"], yes["center_y"])
+        clicked = True
+    if cont:
+        print("检测到继续按钮并尝试点击(强化训练)")
+        action.click(cont["center_x"], cont["center_y"])
         clicked = True
     if done:
         print("检测到完成按钮并尝试点击退出")
