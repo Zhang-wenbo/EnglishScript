@@ -56,6 +56,7 @@ action.click函数(坐标,点击持续时长)
 def find():
     for _ in range(20):
         usb.click(words_spell["q"].x, words_spell["q"].y, 20)  # 连续点击键盘q
+    time.sleep(0.5)
     usb.click(words_spell["请点击确认键"].x, words_spell["请点击确认键"].y, 20)  # 点击确认按钮
     time.sleep(1)
 
@@ -108,7 +109,7 @@ def find():
     else:
         print("未找到单词，继续查找...")
         # 检测完成标识
-        finish = FindImages.find_template([R.img("完成.png")], confidence=0.5, rgb=True)
+        finish = FindImages.find_template([R.img("完成.png")], confidence=0.8, rgb=True)
         if finish:
             print("检测到完成，提前终止拼写流程。")
             return None
@@ -140,9 +141,9 @@ def main():
 while True:
     main()
     # 检测是否完成
-    finish = FindImages.find_template([R.img("完成.png"), ], confidence=0.5, rgb=True)
-    print("已完成")
+    finish = FindImages.find_template([R.img("完成.png"), ], confidence=0.8, rgb=True)
     if finish:
+        print("已完成")
         action.Key.back()
         time.sleep(0.5)
         action.Key.back()
