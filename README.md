@@ -35,7 +35,7 @@
 
 <img src="https://cdn.nlark.com/yuque/0/2025/png/42519851/1760678934096-3d49e009-1529-4785-b27c-c667f9d37293.png?x-oss-process=image%2Fcrop%2Cx_0%2Cy_0%2Cw_1721%2Ch_535" alt="img" width="400">
 
-由于需要调用 TomatoOcr 插件进行 OCR 识别，但价格昂贵，所以如需许可证，可联系开发者，你只需支付远低于市场价的金额即可获取。
+由于需要调用 TomatoOcr 插件进行 OCR 识别，但价格昂贵，所以如需许可证，可联系开发者。
 
 # 三、必要设置
 
