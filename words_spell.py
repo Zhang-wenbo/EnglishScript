@@ -63,7 +63,7 @@ def find():
     result = TomatoOcr.find_all(
         mode="dev",
         http_interval_time=43200,  # 12h进行一次授权验证
-        license="2LVXTSTBSMYLBJDURSL5NEOXZRE1P2I4|Y4v1glz7FpE6HPY5bRMwfOW8",
+        license="2LVXTSTBSMYLBJDURSL5NEOXZRE1P2I4|OYmh2StbXI8nghY5vPCIkT6e",
         rec_type="ch-3.0",
         box_type="rect",
         ratio=1.6,
@@ -145,9 +145,8 @@ while True:
     if finish:
         print("已完成")
         action.Key.back()
-        time.sleep(0.5)
+        time.sleep(1)
         action.Key.back()
-        time.sleep(0.5)
         break
 
 print("单词拼写结束")
