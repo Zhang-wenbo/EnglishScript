@@ -60,4 +60,4 @@ action.Key.back()
 time.sleep(1)
 action.Key.back()
 
-print("单词翻转坐标已保存到 coordinates.json 文件中")
+print("单词翻转坐标已保存到coordinates.json文件中")

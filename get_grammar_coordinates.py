@@ -35,4 +35,4 @@ action.Key.back()
 time.sleep(0.5)
 action.Key.back()
 
-print("语法坐标已保存到 coordinates.json 文件中")
+print("语法坐标已保存到coordinates.json文件中")

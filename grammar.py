@@ -29,11 +29,8 @@ time.sleep(1)
 action.click(grammar[1])  # 点击卡包
 time.sleep(1)
 
-"""
-语法有两种情况，一种直接下一个就行，另一种是全点击A选项
-"""
 
-# 第一种情况-直接全下一个
+# 直接全下一个
 while True:
     action.click(grammar[2])
     time.sleep(0.5)
@@ -45,18 +42,6 @@ while True:
         time.sleep(0.5)
         break
 
-# # 第2种情况-全点击A选项
-# while True:
-#     A = FindImages.find_template([R.img("A.png")])
-#     action.click(A["center_x"], A["center_y"])
-#     time.sleep(1)
-#     action.click(go_next["center_x"], go_next["center_y"])
-#     time.sleep(1)
-#     finish = FindImages.find_template([R.img("完成.png"), ], confidence=0.95, rgb=True)
-#     if finish:
-#         action.Key.back()
-#         time.sleep(1)
-#         break
 
 action.Key.back()
 print("语法结束")

@@ -5,7 +5,7 @@ from ascript.android.system import R # 路径信息
 
 
 # 消息通道
-def tunnblanker(k, v):
+def tunner(k, v):
     print(k, v)
     res = json.loads(v)
     for k, v in res.items():
@@ -46,7 +46,7 @@ def tunnblanker(k, v):
     print("任务已结束")
 
 
-w = WebWindow(R.ui("SettingUI.html"), tunnblanker)
+w = WebWindow(R.ui("SettingUI.html"), tunner)
 w.width(-1)
 w.height("75vh")
 w.show()
