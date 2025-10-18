@@ -3,7 +3,7 @@ print("单词拼写开始执行")
 # ----- 1.导包导库 ----- #
 from ascript.android import action  # 行为库
 from ascript.android.screen import re  # 正则
-from ascript.android.screen import json
+from ascript.android.screen import json # JSON文件处理
 from ascript.android.system import R  # 路径
 from ascript.android.screen import FindImages  # 找图
 from ascript.android import screen  # 屏幕信息
