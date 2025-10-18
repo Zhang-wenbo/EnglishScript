@@ -1,7 +1,7 @@
 print("听力开始执行")
 
 # ----- 1.导库导包 ----- #
-from ascript.android.screen import FindImages  # 图色识别-找图
+from ascript.android.screen import FindImages  # 图色识别->找图
 from ascript.android.system import R  # 路径找文件
 from ascript.android import action  # 行为操作
 import time  # 时间延时

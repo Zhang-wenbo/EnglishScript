@@ -1,5 +1,5 @@
 {
-	"name": "翻转外语",
+	"name": "EnglishScript",
 	"pip": {
 		"options": ["--timeout", "1000"],
 		"install": [

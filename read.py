@@ -55,7 +55,7 @@ while True:
     time.sleep(0.5)
 
     # 检测D选项
-    D = FindImages.find_sift([R.img("D.png")], confidence=0.9)
+    D = FindImages.find_sift([R.img("D.png")], confidence=0.8)
     if D:
         action.click(D["center_x"], D["center_y"])
         print("点击D选项")
