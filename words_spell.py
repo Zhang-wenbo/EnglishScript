@@ -59,7 +59,7 @@ def find():
     time.sleep(0.5)
     usb.click(words_spell["请点击确认键"].x, words_spell["请点击确认键"].y, 20)  # 点击确认按钮
 
-    time.sleep(1)
+    time.sleep(1) # 等待1s以确保提示成功显示
 
     result = TomatoOcr.find_all(
         mode="dev",
@@ -81,7 +81,7 @@ def find():
             words_spell["请点击卡片右下角"].y
         ]
     )
-
+    print("TomatoOcr返回结果为:", result)
     # 将TomatoOcr返回的字符串转为Json格式
     if isinstance(result, str):
         try:
@@ -108,7 +108,7 @@ def find():
         print("提取结果为:", word)
         return word
     else:
-        print("未找到单词，继续查找...")
+        print("未找到单词，将尝试继续返回find函数查找...")
         # 检测完成标识
         finish = FindImages.find_template([R.img("完成.png")], confidence=0.8, rgb=True)
         if finish:
@@ -121,11 +121,11 @@ def find():
 def spell(word):
     for i in word:
         if i.islower():  # 针对小写输入
+            time.sleep(0.1)
             usb.click(words_spell[i].x, words_spell[i].y, 20)
         else:  # 针对大写输入
             usb.click(words_spell["请点击大小写转换键"].x, words_spell["请点击大小写转换键"].y, 20)
-            j = i.lower()
-            usb.click(words_spell[j], 20)
+            usb.click(words_spell[i.lower()], 20)
             usb.click(words_spell["请点击大小写转换键"].x, words_spell["请点击大小写转换键"].y, 20)
     usb.click(words_spell["请点击确认键"].x, words_spell["请点击确认键"].y, 20)
 
