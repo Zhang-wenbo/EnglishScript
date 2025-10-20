@@ -58,6 +58,7 @@ def find():
         usb.click(words_spell["q"].x, words_spell["q"].y, 20)  # 连续点击键盘q
     time.sleep(0.5)
     usb.click(words_spell["请点击确认键"].x, words_spell["请点击确认键"].y, 20)  # 点击确认按钮
+
     time.sleep(1)
 
     result = TomatoOcr.find_all(
@@ -120,7 +121,6 @@ def find():
 def spell(word):
     for i in word:
         if i.islower():  # 针对小写输入
-            time.sleep(0.5)
             usb.click(words_spell[i].x, words_spell[i].y, 20)
         else:  # 针对大写输入
             usb.click(words_spell["请点击大小写转换键"].x, words_spell["请点击大小写转换键"].y, 20)
@@ -143,10 +143,10 @@ while True:
     # 检测是否完成
     finish = FindImages.find_template([R.img("完成.png"), ], confidence=0.8, rgb=True)
     if finish:
-        print("已完成")
-        action.Key.back()
+        print("检测到完成按钮，将尝试点击")
+        usb.click(finish["center_x"], finish["center_y"]) # 该返回到卡包与拼写共存页面了
         time.sleep(1)
-        action.Key.back()
+        action.Key.back() # 返回至主页面
         break
 
 print("单词拼写结束")
