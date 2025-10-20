@@ -49,23 +49,22 @@ learn_card函数无需传参，根据指定矩形范围内进行OCR识别，
 其中因OCR的原因，若释义为多行，它就会分开，
 这里当检测到第一行释义就break掉，防止值被改变
 """
-# 工具函数：仅保留中文
+# 使检测的字符串仅保留中文
 def filter_chinese(s):
     return ''.join(re.findall(r'[\u4e00-\u9fa5]', s))
 
-def is_similar_cn(str1, str2, threshold):
-    s1 = filter_chinese(str1)
-    s2 = filter_chinese(str2)
+# 返回两字符串的相似度
+def is_similar(str1, str2, threshold=0.8):
+    s1 = str1
+    s2 = str2
     matcher = difflib.SequenceMatcher(None, s1, s2)
     return matcher.ratio() >= threshold
 
-def compare_meanings(result, meanings, min_threshold=0.05, start_threshold=0.9, step=0.05):
-    threshold = start_threshold
-    while threshold >= min_threshold:
-        for dict_meaning in meanings:
-            if is_similar_cn(result, dict_meaning, threshold):
-                return True
-        threshold -= step
+# 与定义的相似度阈值做比较，返回True(超过阈值)或False
+def compare_meanings(result, meanings, threshold=0.8):
+    for dict_meaning in meanings:
+        if is_similar(result, dict_meaning, threshold):
+            return True
     return False
 
 # ----- 优化后的 learn_card ----- #
@@ -91,34 +90,25 @@ def learn_card(max_try=3):
                 print("释义为：" + value)
                 meaning_list.append(value)
         if key and meaning_list:
-            DICT[key] = meaning_list
+            meaning_full = ''.join(meaning_list)
+            DICT[key] = [meaning_full]  # 保持DICT格式与其它调用一致（单元素list）
             return DICT
-        print(f"OCR未能识别到有效单词或释义，第{try_num+1}次重试")
+        print(f"OCR未能识别到有效单词或释义，第{try_num+1}次重试，尝试自动点击翻转卡片并处理弹窗")
+        # 未找到，直接进行点击翻转和弹窗处理
+        center_x = (words_turn["请点击卡片左上角"].x + words_turn["请点击卡片右下角"].x) // 2
+        center_y = (words_turn["请点击卡片左上角"].y + words_turn["请点击卡片右下角"].y) // 2
+        usb.click(center_x, center_y, 20)
+        png()  # 尝试关闭/确认弹窗
         time.sleep(1)
-    print("多次未能识别成功，自动尝试翻转卡片后处理弹窗")
-    center_x = (words_turn["请点击卡片左上角"].x + words_turn["请点击卡片右下角"].x) // 2
-    center_y = (words_turn["请点击卡片左上角"].y + words_turn["请点击卡片右下角"].y) // 2
-    usb.click(center_x, center_y, 20)
-    png()  # 返回None时自动尝试关闭弹窗
+    print("多次未能识别成功，结束本次学习卡处理。")
     return None
-
-"""
-字符串相似函数，传入两个字符串并设置阈值，返回True或False
-"""
-def is_similar(str1, str2, threshold=0.6):
-    # 使用SequenceMatcher计算相似度
-    matcher = difflib.SequenceMatcher(None, str1, str2)
-    similarity_ratio = matcher.ratio()
-
-    # 与阈值比较并返回结果
-    return similarity_ratio >= threshold
 
 
 """
 scelect_card函数无需传参也无返回值，它对存在于字典中的单词自动点击其释义位置
 """
 # ----- 优化后的 scelect_card ----- #
-def scelect_card(start_threshold=0.9, min_threshold=0.05, step=0.05):
+def select_card(threshold=0.8):
     res = TomatoOcr.find_all(
         mode="dev", http_interval_time=43200, license=KEY, rec_type="ch-3.0",
         box_type="rect", ratio=1.9, threshold=0.8, return_type="json", capture=AREA,
@@ -130,7 +120,7 @@ def scelect_card(start_threshold=0.9, min_threshold=0.05, step=0.05):
         png() # 异常自动弹窗
         return None
     print("识别结果为：", res)
-    print("字典为：", DICT)
+    print("现存字典为：", DICT)
     matched = False
     key_word = None
     for r in res:
@@ -139,9 +129,9 @@ def scelect_card(start_threshold=0.9, min_threshold=0.05, step=0.05):
             key_word = word.group().strip()
             print("单词为：", key_word)
             continue
-        if key_word and key_word in DICT:
+        if key_word in DICT:
             meanings = DICT[key_word]
-            if compare_meanings(r["words"], meanings, min_threshold, start_threshold, step):
+            if compare_meanings(r["words"], meanings, threshold):
                 location = r["location"]
                 x_center = sum([p[0] for p in location]) // len(location)
                 y_center = sum([p[1] for p in location]) // len(location)
@@ -152,7 +142,7 @@ def scelect_card(start_threshold=0.9, min_threshold=0.05, step=0.05):
                 matched = True
                 break
             else:
-                print(f"OCR识别的选项词 {r['words']} 与释义均未达到最小阈值{min_threshold}")
+                print(f"OCR识别的选项词 {r['words']} 与释义未达到阈值{threshold}")
     if not matched:
         print("未成功匹配到释义，返回None，由主流程决定处理方式。")
         png()  # 失败自动尝试关闭弹窗
@@ -174,7 +164,7 @@ def category():
     if length < 5:
         return learn_card()
     else:
-        return scelect_card()
+        return select_card(threshold=0.8)
 
 
 def png():
@@ -184,15 +174,15 @@ def png():
     clicked = False
     if yes:
         print("检测到确认按钮并尝试点击")
-        action.click(yes["center_x"], yes["center_y"])
+        usb.click(yes["center_x"], yes["center_y"])
         clicked = True
     if cont:
         print("检测到继续按钮并尝试点击(强化训练)")
-        action.click(cont["center_x"], cont["center_y"])
+        usb.click(cont["center_x"], cont["center_y"])
         clicked = True
     if done:
         print("检测到完成按钮并尝试点击退出")
-        action.click(done["center_x"], done["center_y"])
+        usb.click(done["center_x"], done["center_y"])
         time.sleep(0.5)
         action.Key.back()
         clicked = True
