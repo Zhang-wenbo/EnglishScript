@@ -31,7 +31,7 @@ words_turn = {
 
 
 # ----- 2.必要全局变量的配置 ----- #
-KEY = '2LVXTSTBSMYLBJDURSL5NEOXZRE1P2I4|OYmh2StbXI8nghY5vPCIkT6e'
+KEY = '2LVXTSTBSMYLBJDURSL5NEOXZRE1P2I4|DltTFFN0OAKhNaY6FXgLK5BI'
 AREA = [
     words_turn["请点击卡片左上角"].x, words_turn["请点击卡片左上角"].y,
     words_turn["请点击卡片右下角"].x, words_turn["请点击卡片右下角"].y
