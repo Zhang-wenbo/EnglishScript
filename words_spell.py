@@ -125,7 +125,7 @@ def spell(word):
             usb.click(words_spell[i].x, words_spell[i].y, 20)
         else:  # 针对大写输入
             usb.click(words_spell["请点击大小写转换键"].x, words_spell["请点击大小写转换键"].y, 20)
-            usb.click(words_spell[i.lower()], 20)
+            usb.click(words_spell[i.lower()].x, words_spell[i.lower()].y, 20)
             usb.click(words_spell["请点击大小写转换键"].x, words_spell["请点击大小写转换键"].y, 20)
     usb.click(words_spell["请点击确认键"].x, words_spell["请点击确认键"].y, 20)
 
